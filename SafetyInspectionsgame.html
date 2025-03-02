@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Safety Inspection Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    .question {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .button-container {
+      text-align: center;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .hidden {
+      display: none;
+    }
+    .feedback {
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .feedback.correct {
+      border-left: 5px solid green;
+    }
+    .feedback.incorrect {
+      border-left: 5px solid red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Safety Inspection Game</h1>
+    <div id="round1">
+      <div class="question">Round 1: Identify the Priority of Safety Issues</div>
+      <div class="question">Blocked Eye Wash Station: 
+        <select id="eyeWash" onchange="enableSubmit()">
+          <option value="">Select Priority</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+      <div class="question">Damaged Guard: 
+        <select id="damagedGuard" onchange="enableSubmit()">
+          <option value="">Select Priority</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+      <div class="question">Discharged Fire Extinguisher: 
+        <select id="fireExtinguisher" onchange="enableSubmit()">
+          <option value="">Select Priority</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+      <div class="button-container">
+        <button id="submitBtn" class="hidden" onclick="checkRound1()">Submit Answers</button>
+      </div>
+    </div>
+
+    <div id="feedback1" class="hidden"></div>
+
+    <div id="round2" class="hidden">
+      <div class="question">Round 2: Scenario Application</div>
+      <div class="question">Scenario: You’re inspecting a tractor. Which issue is most likely?</div>
+      <button onclick="checkRound2('Damaged Guard')">Damaged Guard</button>
+      <button onclick="checkRound2('Blocked Eye Wash Station')">Blocked Eye Wash Station</button>
+      <button onclick="checkRound2('Discharged Fire Extinguisher')">Discharged Fire Extinguisher</button>
+    </div>
+
+    <div id="feedback2" class="hidden"></div>
+
+    <div id="round3" class="hidden">
+      <div class="question">Round 3: Problem Solving</div>
+      <div class="question">Scenario: A worker reports a blocked eye wash station. What should you do?</div>
+      <button onclick="checkRound3('Immediately clear the blockage and ensure access')">Immediately clear the blockage and ensure access</button>
+      <button onclick="checkRound3('Document the issue and report it for later')">Document the issue and report it for later</button>
+      <button onclick="checkRound3('Ignore it if no emergency is occurring')">Ignore it if no emergency is occurring</button>
+    </div>
+
+    <div id="feedback3" class="hidden"></div>
+  </div>
+
+  <script>
+    let round1Complete = false;
+
+    function enableSubmit() {
+      if (document.getElementById('eyeWash').value && document.getElementById('damagedGuard').value && document.getElementById('fireExtinguisher').value) {
+        document.getElementById('submitBtn').classList.remove('hidden');
+      }
+    }
+
+    function checkRound1() {
+      let feedbackMessage = '';
+      let allCorrect = true;
+
+      // Round 1 Feedback
+      if (document.getElementById('eyeWash').value !== 'High') {
+        feedbackMessage += 'Blocked Eye Wash Station: **High** priority!\n';
+        allCorrect = false;
+      }
+      if (document.getElementById('damagedGuard').value !== 'High') {
+        feedbackMessage += 'Damaged Guard: **High** priority!\n';
+        allCorrect = false;
+      }
+      if (document.getElementById('fireExtinguisher').value !== 'High') {
+        feedbackMessage += 'Discharged Fire Extinguisher: **High** priority!\n';
+        allCorrect = false;
+      }
+
+      const feedback1 = document.getElementById('feedback1');
+      feedback1.classList.remove('hidden');
+      feedback1.textContent = feedbackMessage;
+
+      if (allCorrect) {
+        feedback1.classList.add('correct');
+      } else {
+        feedback1.classList.add('incorrect');
+      }
+
+      // Hide Round 1
+      document.getElementById('round1').classList.add('hidden');
+      document.getElementById('round2').classList.remove('hidden');
+    }
+
+    function checkRound2(answer) {
+      const feedback2 = document.getElementById('feedback2');
+      feedback2.classList.remove('hidden');
+      
+      if (answer === 'Damaged Guard') {
+        feedback2.textContent = 'Correct! A damaged guard is a high-risk issue and should always be addressed immediately.';
+        feedback2.classList.add('correct');
+      } else {
+        feedback2.textContent = 'Incorrect. The correct answer is Damaged Guard, which is a safety priority.';
+        feedback2.classList.add('incorrect');
+      }
+
+      document.getElementById('round2').classList.add('hidden');
+      document.getElementById('round3').classList.remove('hidden');
+    }
+
+    function checkRound3(answer) {
+      const feedback3 = document.getElementById('feedback3');
+      feedback3.classList.remove('hidden');
+
+      if (answer === 'Immediately clear the blockage and ensure access') {
+        feedback3.textContent = 'Correct! Eye wash stations must always be accessible in case of emergency.';
+        feedback3.classList.add('correct');
+      } else {
+        feedback3.textContent = 'Incorrect. The correct action is to immediately clear the blockage and ensure the eye wash station is accessible.';
+        feedback3.classList.add('incorrect');
+      }
+
+      // Hide Round 3
+      document.getElementById('round3').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
